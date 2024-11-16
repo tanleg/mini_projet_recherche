@@ -1,1 +1,4 @@
 venv/
+post_file.http
+*.csv
+__pycache__/

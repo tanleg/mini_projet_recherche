@@ -8,6 +8,8 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from .models import Devise, TauxDeChange
 from .serializers import DeviseSerializer, TauxDeChangeSerializer
+from django.db import transaction
+from rest_framework.views import APIView
 
 # ViewSet pour gérer les devises
 class DeviseViewSet(viewsets.ModelViewSet):
@@ -59,8 +61,10 @@ class TauxDeChangeViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(taux_de_change, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['post'], parser_classes=[MultiPartParser])
-    def upload_csv(self, request):
+
+class PostViewSet(APIView):
+
+    def post(self, request):
         """
         Endpoint pour charger un fichier CSV avec des taux de change.
         """
@@ -69,59 +73,54 @@ class TauxDeChangeViewSet(viewsets.ModelViewSet):
             return Response({"error": "Fichier CSV non fourni."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
+            # Créer un lecteur CSV à partir du fichier (lecture en streaming)
             csv_file = csv.reader(file.read().decode('utf-8').splitlines())
             header = next(csv_file)  # Lire la première ligne d'en-tête
-            
+
             # Vérification des colonnes du fichier CSV
             if header[0].lower() != 'datetime' or len(header) != 2:
                 return Response({"error": "Format CSV incorrect. Utilisez les colonnes: DateTime, Devise_to_EUR"},
                                 status=status.HTTP_400_BAD_REQUEST)
 
             # Extraction du code de devise depuis l'en-tête (ex: "JPY" de "JPY_to_EUR")
-            code_iso = header[1].split('_')[0]
-            devise, created = Devise.objects.get_or_create(code_iso=code_iso)
-            
+            code_iso = header[1].split('_')[0]  # Récupère "JPY" de "JPY_to_EUR"
+            devise, created = Devise.objects.get_or_create(code_iso=code_iso)  # Crée ou récupère la devise
+
+            # Supprimer les anciens taux de change pour cette devise avant d'insérer les nouveaux
+            TauxDeChange.objects.filter(id_devise=devise).delete()
+
+            taux_de_change_objects = []  # Liste pour stocker les objets à insérer en masse
+
+            # Parcourir chaque ligne du fichier CSV
             for row in csv_file:
-                date_str, valeur_str = row
-                date = datetime.fromisoformat(date_str.strip())
-                valeur = float(valeur_str.strip())
-                
-                # Enregistrement de chaque taux de change
-                TauxDeChange.objects.create(
-                    date=date,
-                    valeur=valeur,
-                    id_devise=devise
-                )
+                if len(row) != 2:  # Si la ligne ne contient pas exactement 2 éléments, on l'ignore
+                    continue
+
+                try:
+                    date_str, valeur_str = row
+                    # Vérifier que les valeurs sont valides avant de continuer
+                    if not date_str or not valeur_str:
+                        continue
+
+                    date = datetime.fromisoformat(date_str.strip())  # Convertir la chaîne de date en objet datetime
+                    valeur = float(valeur_str.strip())  # Convertir la valeur en float
+
+                    # Ajouter chaque objet à la liste
+                    taux_de_change_objects.append(TauxDeChange(
+                        date=date,
+                        valeur=valeur,
+                        id_devise=devise
+                    ))
+
+                except ValueError as e:
+                    return Response({"error": f"Erreur lors du traitement de la ligne: {row}. Détails: {str(e)}"},
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+            # Insertion en masse des objets dans la base de données
+            with transaction.atomic():
+                TauxDeChange.objects.bulk_create(taux_de_change_objects)
 
             return Response({"success": "Données CSV importées avec succès."}, status=status.HTTP_201_CREATED)
 
         except Exception as e:
             return Response({"error": f"Erreur d'importation CSV: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    @action(detail=False, methods=['post'])
-    def ajouter_taux(self, request):
-        """
-        Endpoint pour ajouter manuellement un taux de change pour une devise.
-        """
-        devise_id = request.data.get("id_devise")
-        date_str = request.data.get("date")
-        valeur = request.data.get("valeur")
-
-        if not (devise_id and date_str and valeur):
-            return Response({"error": "Les champs 'id_devise', 'date' et 'valeur' sont requis."},
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            devise = get_object_or_404(Devise, id_devise=devise_id)
-            date = datetime.fromisoformat(date_str.strip())
-            taux_de_change = TauxDeChange.objects.create(
-                date=date,
-                valeur=valeur,
-                id_devise=devise
-            )
-            serializer = TauxDeChangeSerializer(taux_de_change)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        except Exception as e:
-            return Response({"error": f"Erreur lors de l'ajout du taux: {str(e)}"},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
