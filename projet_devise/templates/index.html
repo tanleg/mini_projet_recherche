@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi des Devises</title>
+    <script src="static/js/app.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Corps de la page */
+        body {
+            background-color: #f1f1f1; /* Fond clair pour un look moderne */
+            font-family: 'Arial', sans-serif;
+            color: #333; /* Couleur de texte sobre */
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #5f3d99; /* Violet foncé */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .navbar-brand:hover {
+            color: #f0e6f7; /* Violet clair pour survol */
+        }
+
+        .navbar-nav .nav-link {
+            color: #f0e6f7;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Tableau des devises */
+        .currency-table {
+            background-color: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        .currency-table th,
+        .currency-table td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 12px 18px;
+        }
+
+        .currency-table th {
+            background-color: #5f3d99; /* Violet foncé */
+            color: white;
+        }
+
+        .currency-table tbody tr:hover {
+            background-color: #e5d0ff; /* Mauve clair pour survol */
+            cursor: pointer;
+        }
+
+        .currency-table tbody tr {
+            transition: background-color 0.3s ease;
+        }
+
+        /* Boutons */
+        .btn-primary {
+            background-color: #9a4c98; /* Violet doux */
+            border-color: #9a4c98;
+        }
+
+        .btn-primary:hover {
+            background-color: #6f2b7c; /* Violet plus foncé */
+        }
+
+        .btn-success {
+            background-color: #673ab7; /* Violet intense */
+            border-color: #673ab7;
+        }
+
+        .btn-success:hover {
+            background-color: #4e2481; /* Violet foncé */
+        }
+
+        /* Formulaire */
+        .form-label {
+            font-weight: 600;
+            color: #342e63;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            background-color: #f3e5f5;
+            border-color: #ddd;
+        }
+
+        /* Modal */
+        .modal-content {
+            border-radius: 15px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .modal-header {
+            background-color: #673ab7; /* Violet intense */
+            color: white;
+        }
+
+        /* Animation fade-in */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Canvas style */
+        #deviseGraph {
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Modale responsive */
+        .modal-dialog.modal-fullscreen {
+            max-width: 85%;
+        }
+
+        /* Container Spacing */
+        .container {
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+
+        /* Autres styles */
+        .h2 {
+            font-weight: 700;
+            color: #5f3d99;
+        }
+
+        .btn-success, .btn-primary {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /* Cards pour informations */
+        .info-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            padding: 20px;
+        }
+
+        .info-card h4 {
+            color: #5f3d99;
+            font-weight: bold;
+        }
+
+        .info-card p {
+            color: #666;
+        }
+
+        /* Style pour le titre */
+.modal-header {
+    background-color: #6a1b9a; /* Couleur violette */
+    color: white;
+    border-bottom: none;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Style pour le corps du modal */
+.modal-body {
+    padding: 20px;
+    background-color: #f9f9f9; /* Couleur de fond plus douce */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Ajout de marges au graphique */
+#deviseGraph {
+    padding: 10px;
+}
+
+/* Animation pour l'apparition du graphique */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Suivi des Devises</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        
+
+        <h2 class="text-center">Sélectionner une Devise</h2>
+
+        <!-- Tableau des devises -->
+        <table class="table currency-table">
+            <thead>
+                <tr>
+                    <th>Devise</th>
+                    <th>Choisir</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Les lignes seront ajoutées ici dynamiquement via JavaScript -->
+            </tbody>
+        </table>
+
+        <!-- Formulaire d'ajout CSV -->
+        <div class="mt-5">
+            <h2 class="text-center">Ajouter une Devise via CSV</h2>
+            <form id="csvForm">
+                <div class="mb-3">
+                    <label for="csvFile" class="form-label">Fichier CSV</label>
+                    <input type="file" class="form-control" id="csvFile" accept=".csv" required>
+                </div>
+                <button type="submit" class="btn btn-success" onclick="upload()">Charger le fichier</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modale avec la classe modal-lg -->
+    <div class="modal fade" id="graphModal" tabindex="-1" aria-labelledby="graphModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="graphModalLabel">Graphique du Taux de Change</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <canvas id="deviseGraph" width="1000" height="1000"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS et dépendances -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            chargerDevises(); // Appel de la fonction pour charger les devises
+        });
+    </script>
+</body>
+
+</html>
