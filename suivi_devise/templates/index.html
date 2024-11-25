@@ -44,14 +44,12 @@
         <!-- Formulaire d'ajout CSV -->
         <div class="mt-5">
             <h2 class="text-center">Ajouter une Devise via CSV</h2>
-            <form id="csvForm" method="POST">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="csvFile" class="form-label">Fichier CSV</label>
-                    <input type="file" class="form-control" id="csvFile" accept=".csv" required>
-                </div>
-                <button type="submit" class="btn btn-success">Charger le fichier</button>
-            </form>            
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="csvFile" class="form-label">Fichier CSV</label>
+                <input type="file" name="file" class="form-control" id="csvFile" accept=".csv" required>
+            </div>
+            <button type="submit" class="btn btn-success" id="btnSubmit">Charger le fichier</button>
         </div>
     </div>
 
@@ -76,7 +74,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            chargerDevises(); // Appel de la fonction pour charger les devises
+
+            chargerDevises();
+            document.getElementById('btnSubmit').addEventListener('click', upload);
+            
         });
     </script>
 </body>

@@ -1,5 +1,22 @@
 let currentChart = null;
 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+
 // Fonction afficherGraphique définie en dehors de window.onload
 function afficherGraphique(devise) {
     const ctx = document.getElementById('deviseGraph').getContext('2d');
@@ -98,10 +115,8 @@ function chargerDevises() {
 }
 
 function upload(event) {
-    // Empêche le rafraîchissement automatique de la page
     event.preventDefault();
 
-    // Récupérer le fichier sélectionné
     const fileInput = document.getElementById('csvFile');
     const file = fileInput.files[0];
 
@@ -110,18 +125,13 @@ function upload(event) {
         return;
     }
 
-    // Récupérer le token CSRF
-    const csrfToken = document.querySelector('[name="csrf-token"]').value;
-
-    // Créer un objet FormData et y ajouter le fichier
     const formData = new FormData();
     formData.append('file', file);
 
-    // Envoi du fichier au serveur avec CSRF Token
-    fetch('http://localhost:8000/api/charger_csv', {
+    fetch('http://127.0.0.1:8000/api/charger_csv/', {
         method: 'POST',
         headers: {
-            'X-CSRFToken': csrfToken // Ajouter le token CSRF dans les en-têtes
+            'X-CSRFToken': getCookie('csrftoken'),
         },
         body: formData
     })
@@ -131,19 +141,13 @@ function upload(event) {
         }
         return response.json();
     })
-    .then(result => {
+    .then(data => {
         alert("Fichier téléchargé avec succès !");
-        console.log(result); // Résultat de l'API
+        chargerDevises();
+        console.log(data);
     })
     .catch(error => {
         console.error("Erreur :", error);
         alert("Une erreur s'est produite lors de l'upload.");
     });
 }
-
-document.getElementById('csvForm').addEventListener('submit', upload);
-
-window.onload = function() {
-    chargerDevises();
-};
-
