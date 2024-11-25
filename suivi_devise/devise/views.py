@@ -1,15 +1,14 @@
 import csv
 from datetime import datetime
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from .models import Devise, TauxDeChange
 from .serializers import DeviseSerializer, TauxDeChangeSerializer
 from django.db import transaction
 from rest_framework.views import APIView
+from django.template import RequestContext
 
 # ViewSet pour gérer les devises
 class DeviseViewSet(viewsets.ModelViewSet):
@@ -60,6 +59,7 @@ class TauxDeChangeViewSet(viewsets.ModelViewSet):
         taux_de_change = TauxDeChange.objects.filter(id_devise=devise)
         serializer = self.get_serializer(taux_de_change, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class PostViewSet(APIView):
@@ -113,7 +113,7 @@ class PostViewSet(APIView):
                     ))
 
                 except ValueError as e:
-                    return Response({"error": f"Erreur lors du traitement de la ligne: {row}. Détails: {str(e)}"},
+                    return  Response({"error": f"Erreur lors du traitement de la ligne: {row}. Détails: {str(e)}"},
                                     status=status.HTTP_400_BAD_REQUEST)
 
             # Insertion en masse des objets dans la base de données
