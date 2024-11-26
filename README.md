@@ -84,9 +84,9 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
 2. Parcourir les devises et appuyer sur "Afficher" pour afficher l'historique des données sous forme de graphique.
 3. Charger un fichier CSV pour ajouter une nouvelle devise ou remplacer les données d'une devise existante.
    Format du fichier CSV : DateTime,JPY_to_EUR 
-   Exemple :
-      DateTime,JPY_to_EUR
-      2024-11-12 14:27:50.735354,0.007473733501264278
+   Exemple :  
+      DateTime,JPY_to_EUR  
+      2024-11-12 14:27:50.735354,0.007473733501264278  
       2024-11-12 14:57:50.735354,0.007342967307777718
 
 
