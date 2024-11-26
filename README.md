@@ -73,7 +73,7 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
      ```
      cd suivi_devise
      python manage.py makemigrations
-     python manage.py mirate
+     python manage.py migrate
      ```
 4. **Lancer le projet** :
      ```
