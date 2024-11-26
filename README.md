@@ -61,8 +61,8 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
 2. **Installer les dépendances** :
    - Créer un environnement virtuel et l'activer
      ```
-     .\venv\Scripts\Activate
      python -m venv venv
+     .\venv\Scripts\Activate
      pip install -r requirements.txt
      ```
 
@@ -83,7 +83,7 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
 1. Accéder à l'application web pour visualiser les graphiques et charger des fichiers CSV.
 2. Parcourir les devises et appuyer sur "Afficher" pour afficher l'historique des données sous forme de graphique.
 3. Charger un fichier CSV pour ajouter une nouvelle devise ou remplacer les données d'une devise existante.
-   Format du fichier CSV : DateTime,JPY_to_EUR 
+   Format du fichier CSV : DateTime,JPY_to_EUR   
    Exemple : 2024-11-12 14:27:50.735354,0.007473733501264278
 
 ---
