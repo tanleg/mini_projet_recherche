@@ -62,9 +62,7 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
    - Créer un environnement virtuel et l'activer
      ```
      .\venv\Scripts\Activate
-     ```
      python -m venv venv
-     ```
      pip install -r requirements.txt
      ```
 
@@ -75,7 +73,6 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
 4. **Lancer le projet** :
      ```
      cd suivi_devise
-     ```
      python manage.py runserver
      ```
      L'interface web se trouve à l'adresse suivante : http://127.0.0.1:8000/
