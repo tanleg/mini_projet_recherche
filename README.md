@@ -68,7 +68,8 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
 
 3. **Configurer la base de données** :
    - Créer une base MySQL grâce au fichier [suivi_devises](suivi_devises.sql)
-   - mettre à jour les paramètres DATABASES dans `settings.py`.
+   - Mettre à jour les paramètres DATABASES dans `settings.py`.
+   - Effectuer les migrations pour la base de données :
      ```
      cd suivi_devise
      python manage.py makemigrations
