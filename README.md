@@ -61,8 +61,8 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
 2. **Installer les dépendances** :
    - Créer un environnement virtuel et l'activer
      ```
-     .\venv\Scripts\Activate
      python -m venv venv
+     .\venv\Scripts\Activate
      pip install -r requirements.txt
      ```
 
