@@ -69,10 +69,13 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
 3. **Configurer la base de données** :
    - Créer une base MySQL grâce au fichier [suivi_devises](suivi_devises.sql)
    - mettre à jour les paramètres DATABASES dans `settings.py`.
-
-4. **Lancer le projet** :
      ```
      cd suivi_devise
+     python manage.py makemigrations
+     python manage.py mirate
+     ```
+4. **Lancer le projet** :
+     ```
      python manage.py runserver
      ```
      L'interface web se trouve à l'adresse suivante : http://127.0.0.1:8000/
