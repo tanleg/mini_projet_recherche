@@ -1,5 +1,17 @@
 let currentChart = null;
 
+let initialChartState = {
+    xMin: null,
+    xMax: null,
+    yMin: null,
+    yMax: null
+};
+
+document.addEventListener("DOMContentLoaded", function () {
+    chargerDevises();
+    document.getElementById('btnSubmit').addEventListener('click', upload);
+});
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -16,8 +28,6 @@ function getCookie(name) {
 }
 
 
-
-// Fonction afficherGraphique définie en dehors de window.onload
 function afficherGraphique(devise) {
     const ctx = document.getElementById('deviseGraph').getContext('2d');
 
@@ -33,7 +43,6 @@ function afficherGraphique(devise) {
                 currentChart.destroy();
             }
 
-            
             currentChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -51,26 +60,39 @@ function afficherGraphique(devise) {
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // Désactive le ratio pour adapter la largeur
+                    maintainAspectRatio: false, 
                     scales: {
                         y: {
                             beginAtZero: false
                         }
                     },
                     plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `Taux de change: ${context.parsed.y}`;
-                                }
+                        zoom: {
+                            wheel: {
+                                enabled: true,  // Active le zoom avec la molette de la souris
+                                speed: 0.1      // Détermine la vitesse du zoom
+                            },
+                            drag: {
+                                enabled: true,  // Active le zoom par glissement (drag)
+                                speed: 0.1      // Vitesse du zoom
+                            },
+                            pinch: {
+                                enabled: true,  // Active le zoom par pincement (pour les appareils tactiles)
+                                speed: 0.1      // Vitesse du zoom
                             }
                         }
                     }
+                    
                 }
             });
+
+
+            initialChartState.xMin = currentChart.scales.x.min;
+            initialChartState.xMax = currentChart.scales.x.max;
+            initialChartState.yMin = currentChart.scales.y.min;
+            initialChartState.yMax = currentChart.scales.y.max;
+            document.getElementById('deviseGraph').addEventListener('click', zoomGraph);    
+            document.getElementById('resetZoomButton').addEventListener('click', dezoomGraph);
 
             const modal = new bootstrap.Modal(document.getElementById('graphModal'));
             modal.show();
@@ -114,6 +136,7 @@ function chargerDevises() {
         });
 }
 
+
 function upload(event) {
     event.preventDefault();
 
@@ -151,3 +174,43 @@ function upload(event) {
         alert("Une erreur s'est produite lors de l'upload.");
     });
 }
+ 
+
+function zoomGraph(event) {
+    const xScale = currentChart.scales.x;
+
+    const canvasX = event.offsetX;
+
+    const dataX = xScale.getValueForPixel(canvasX);
+
+    console.log(`Clic à position X: ${dataX}`);
+
+    const zoomFactor = 0.5; // zoom 50%
+    const rangeX = xScale.max - xScale.min;
+
+    const newMinX = dataX - rangeX * zoomFactor / 2;
+    const newMaxX = dataX + rangeX * zoomFactor / 2;
+
+    xScale.min = newMinX;
+    xScale.max = newMaxX;
+
+    currentChart.options.scales.x.min = newMinX;
+    currentChart.options.scales.x.max = newMaxX;
+
+    currentChart.update('none');
+}
+
+
+function dezoomGraph() {
+    if (currentChart) {
+        
+        currentChart.options.scales.x.min = initialChartState.xMin;
+        currentChart.options.scales.x.max = initialChartState.xMax;
+
+        currentChart.scales.x.min = initialChartState.xMin;
+        currentChart.scales.x.max = initialChartState.xMax;
+
+        currentChart.update();
+    }
+}
+

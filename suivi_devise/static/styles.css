@@ -36,7 +36,6 @@ body {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    margin-top: 30px;
 }
 
 .currency-table th,
@@ -195,4 +194,9 @@ opacity: 1;
 
 .modal-content {
 animation: fadeIn 0.5s ease-in-out;
+}
+
+.table-responsive-scroll {
+    max-height: 320px; /* Ajustez la hauteur maximale selon vos besoins */
+    overflow-y: auto; /* Active le défilement vertical */
 }
