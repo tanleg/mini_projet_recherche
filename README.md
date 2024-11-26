@@ -55,7 +55,7 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
 1. **Cloner le dépôt** :
    ```
    git clone https://github.com/tanleg/mini_projet_recherche.git
-   cd projet_devises
+   cd mini_projet_recherche
    ```
 
 2. **Installer les dépendances** :
