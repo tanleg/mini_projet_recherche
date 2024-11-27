@@ -29,11 +29,14 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
 
 ## Technologies Utilisées
 
-- **Backend** : Django
+- **Backend** : Django  
      Django est choisi pour sa productivité grâce à son ORM intégré, son architecture MVT modulaire, et son support natif des API REST, permettant un développement rapide et structuré tout en favorisant la maintenabilité.
-- **Base de données** : MySQL
-- **Frontend** : Bootstrap
-- **API REST** : Intégrée dans Django
+- **Base de données** : MySQL  
+     MySQL offre une solution fiable et performante pour gérer les données des devises et des taux de change, tout en s’intégrant parfaitement avec Django et en étant accessible pour une configuration locale ou en cloud.
+- **Frontend** : Bootstrap  
+   Bootstrap facilite le développement rapide d’une interface utilisateur responsive avec des composants prêts à l’emploi, tout en s’intégrant efficacement avec des bibliothèques de visualisation de données comme Chart.js
+- **API REST** : Intégrée dans Django  
+   L’intégration de l’API REST dans Django simplifie la gestion du projet en restant cohérente avec l’architecture backend, tout en garantissant des performances optimales et une standardisation pour des usages futurs.
 
 ---
 
