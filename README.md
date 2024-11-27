@@ -30,6 +30,7 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
 ## Technologies Utilisées
 
 - **Backend** : Django
+     Django est choisi pour sa productivité grâce à son ORM intégré, son architecture MVT modulaire, et son support natif des API REST, permettant un développement rapide et structuré tout en favorisant la maintenabilité.
 - **Base de données** : MySQL
 - **Frontend** : Bootstrap
 - **API REST** : Intégrée dans Django
