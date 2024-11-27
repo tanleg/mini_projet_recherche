@@ -13,6 +13,7 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
 
 ## Fonctionnalités
 
+
 1. **Base de données** :
    - Stocke les cours des devises avec une historisation des variations par date.
 
@@ -29,6 +30,7 @@ L'application est conçue pour répondre aux besoins d'analyse des fluctuations 
 
 ## Technologies Utilisées
 
+#La contrainte de temps du projet a favorisé l'utilisation de technlogies simples et permettant un développement rapide :  
 - **Backend** : Django  
      Django est choisi pour sa productivité grâce à son ORM intégré, son architecture MVT modulaire, et son support natif des API REST, permettant un développement rapide et structuré tout en favorisant la maintenabilité.
 - **Base de données** : MySQL  
