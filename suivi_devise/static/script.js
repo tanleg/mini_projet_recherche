@@ -1,3 +1,4 @@
+// Variables du graphique
 let currentChart = null;
 
 let initialChartState = {
@@ -7,11 +8,13 @@ let initialChartState = {
     yMax: null
 };
 
+// Charge la liste des devises et gère l'upload des fichiers lors du clic sur le bouton "Charger le fichier"
 document.addEventListener("DOMContentLoaded", function () {
     chargerDevises();
     document.getElementById('btnSubmit').addEventListener('click', upload);
 });
 
+// Servira à récuperer le token CSRF
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -27,10 +30,11 @@ function getCookie(name) {
     return cookieValue;
 }
 
-
+// Affiche le Graphique
 function afficherGraphique(devise) {
     const ctx = document.getElementById('deviseGraph').getContext('2d');
 
+    // Recupère les donnée de l'API à afficher 
     fetch(`/api/taux_de_change/${devise}`)
         .then(response => response.json())
         .then(data => {
@@ -69,16 +73,16 @@ function afficherGraphique(devise) {
                     plugins: {
                         zoom: {
                             wheel: {
-                                enabled: true,  // Active le zoom avec la molette de la souris
-                                speed: 0.1      // Détermine la vitesse du zoom
+                                enabled: true, // Zoom molette
+                                speed: 0.1
                             },
                             drag: {
-                                enabled: true,  // Active le zoom par glissement (drag)
-                                speed: 0.1      // Vitesse du zoom
+                                enabled: true, // Zoom glissement
+                                speed: 0.1
                             },
                             pinch: {
-                                enabled: true,  // Active le zoom par pincement (pour les appareils tactiles)
-                                speed: 0.1      // Vitesse du zoom
+                                enabled: true, // Zoom par pincement
+                                speed: 0.1
                             }
                         }
                     }
@@ -91,6 +95,8 @@ function afficherGraphique(devise) {
             initialChartState.xMax = currentChart.scales.x.max;
             initialChartState.yMin = currentChart.scales.y.min;
             initialChartState.yMax = currentChart.scales.y.max;
+
+            // Gère le zoom + le bouton de dézoom 
             document.getElementById('deviseGraph').addEventListener('click', zoomGraph);    
             document.getElementById('resetZoomButton').addEventListener('click', dezoomGraph);
 
@@ -102,7 +108,7 @@ function afficherGraphique(devise) {
         });
 }
 
-
+// Récupère les devises présentes en base de données grâce à l'API
 function chargerDevises() {
     console.log("Tentative de récupération des devises...");
     fetch('http://localhost:8000/api/devise')
@@ -118,6 +124,7 @@ function chargerDevises() {
             const tbody = document.querySelector('.currency-table tbody');
             tbody.innerHTML = '';
 
+            // Ajoute la possibilité d'afficher le graphique
             data.forEach(devise => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -137,6 +144,7 @@ function chargerDevises() {
 }
 
 
+// Upload un fichier csv si valide
 function upload(event) {
     event.preventDefault();
 
@@ -151,6 +159,7 @@ function upload(event) {
     const formData = new FormData();
     formData.append('file', file);
 
+    // Requete POST
     fetch('http://127.0.0.1:8000/api/charger_csv/', {
         method: 'POST',
         headers: {
@@ -176,6 +185,7 @@ function upload(event) {
 }
  
 
+// Zoom sur le graphe (facteur de 0.5)
 function zoomGraph(event) {
     const xScale = currentChart.scales.x;
 
@@ -201,6 +211,7 @@ function zoomGraph(event) {
 }
 
 
+// Dézoom totalement le graphe en remettant les valeurs originales
 function dezoomGraph() {
     if (currentChart) {
         
